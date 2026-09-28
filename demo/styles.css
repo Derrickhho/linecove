@@ -60,6 +60,16 @@ h2 {
   max-width: 40rem;
 }
 
+.lede a {
+  color: var(--blue);
+  text-decoration: none;
+}
+
+.lede a:hover,
+.lede a:active {
+  color: var(--blue-hover);
+}
+
 .links {
   display: flex;
   flex-wrap: wrap;

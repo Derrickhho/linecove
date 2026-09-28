@@ -1,0 +1,45 @@
+{
+  "name": "rounded-highlight",
+  "version": "0.0.1",
+  "private": true,
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Derrickhho/rounded-highlight.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Derrickhho/rounded-highlight/issues"
+  },
+  "homepage": "https://github.com/Derrickhho/rounded-highlight#readme",
+  "description": "Multi-line text highlights with outer corners and inward steps, in the style of VS Code selections.",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "sideEffects": false,
+  "keywords": [
+    "selection",
+    "highlight",
+    "rounded",
+    "text"
+  ],
+  "scripts": {
+    "build": "rm -rf dist && tsc -p tsconfig.json",
+    "test": "tsc -p tsconfig.test.json && node --test dist-test/geometry.test.js",
+    "demo": "vite",
+    "prepublishOnly": "npm test && npm run build"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.1",
+    "typescript": "^5.6.3",
+    "vite": "^5.4.11"
+  }
+}

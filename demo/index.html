@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Rounded highlights</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@100..900&family=Inter:opsz,wght@14..32,100..900&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main>
+      <img class="badge" src="./logo.svg" alt="Round.dev" width="59" height="46" />
+      <p class="title">Rounded highlights</p>
+      <p class="lede">
+        Library for rounding corners for the highlight area when selecting text.
+        Customize the color and radius. Try it out below.
+      </p>
+      <p class="links">
+        <a href="#">
+          <svg viewBox="0 0 16 16" aria-hidden="true">
+            <path fill="currentColor" d="M8 0a8 8 0 0 0-2.53 15.59c.4.07.55-.17.55-.38v-1.33c-2.23.48-2.7-1.08-2.7-1.08-.36-.93-.89-1.17-.89-1.17-.73-.5.05-.49.05-.49.8.06 1.23.83 1.23.83.72 1.23 1.88.87 2.34.67.07-.52.28-.87.5-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.6 7.6 0 0 1 4 0c1.53-1.03 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.28.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48v2.19c0 .21.15.46.55.38A8 8 0 0 0 8 0Z" />
+          </svg>
+          <span>View on GitHub</span>
+        </a>
+      </p>
+
+      <div class="panel">
+        <div class="tabs">
+          <div role="tablist" aria-label="Example">
+            <a role="tab" id="tab-code" href="#code" aria-controls="code" aria-selected="true">Code</a>
+            <a role="tab" id="tab-text" href="#poem" aria-controls="poem" aria-selected="false">Text</a>
+          </div>
+          <div class="settings" id="settings">
+            <button type="button" id="settings-toggle" aria-label="Radius" aria-haspopup="listbox" aria-expanded="false" aria-controls="radius-list">
+              <span id="radius-value">Radius: 6px</span>
+              <svg viewBox="0 0 16 16" aria-hidden="true">
+                <path d="M4 6.5 8 10.5 12 6.5" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+            </button>
+            <ul id="radius-list" role="listbox" aria-label="Radius" hidden>
+              <li role="option" data-radius="2">2px</li>
+              <li role="option" data-radius="4">4px</li>
+              <li role="option" data-radius="6" aria-selected="true">6px</li>
+              <li role="option" data-radius="8">8px</li>
+              <li role="option" data-radius="12">12px</li>
+              <li role="option" data-radius="16">16px</li>
+            </ul>
+          </div>
+        </div>
+
+        <div id="compare">
+          <div class="pane" id="before">
+            <p class="pane-label">
+              <svg class="mark-no" viewBox="0 0 16 16" aria-hidden="true">
+                <path d="M4.5 4.5 11.5 11.5M11.5 4.5 4.5 11.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+              </svg>
+              without rounding
+            </p>
+          </div>
+          <div class="pane" id="after">
+            <p class="pane-label">
+              <svg class="mark-yes" viewBox="0 0 16 16" aria-hidden="true">
+                <path d="M3.5 8.5 6.5 11.5 12.5 4.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+              with rounding
+            </p>
+          </div>
+        </div>
+
+        <div id="play" hidden>
+          <div id="stage">
+            <pre id="code" class="example-code"><code>public void Repeat(int x)
+{
+    if (x &lt; 0)
+    {
+        x = x % width;
+        x = width + x;
+    }
+    else
+        x = x % width;
+    return x;
+}</code></pre>
+            <div id="poem" class="poem example-text" hidden>
+              <p>
+                The river keeps the evening in its pocket.<br />
+                It spends the light on stones,<br />
+                then folds the dark along the bank.
+              </p>
+              <p>
+                Where the grass is still deciding<br />
+                whether to be water,<br />
+                a heron stands in the shallows<br />
+                and does not choose.
+              </p>
+              <p>
+                By morning the pocket is empty.<br />
+                The stones remember the light.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <section>
+        <h2>Installation</h2>
+        <pre class="install"><code>npm install rounded-highlight</code></pre>
+      </section>
+    </main>
+    <script type="module" src="./main.ts"></script>
+  </body>
+</html>

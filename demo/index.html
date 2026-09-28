@@ -103,9 +103,26 @@
         </div>
       </div>
 
-      <section>
+      <section class="docs">
         <h2>Installation</h2>
+        <p>The package is ESM and includes TypeScript types. It has no runtime dependencies.</p>
         <pre class="install"><code>npm install linecove</code></pre>
+        <h2>Usage</h2>
+        <p>
+          Attach it to an element. The browser selection stays in place, so copy and paste still work.
+          Inside that element, the native highlight is hidden and Linecove draws the rounded shape instead.
+          Call <code>destroy()</code> when the element goes away.
+        </p>
+        <pre class="usage"><code>import { attachLiveSelection } from "linecove";
+
+const article = document.querySelector("article");
+if (!article) throw new Error("Missing article");
+
+const highlight = attachLiveSelection(article, {
+  radius: 6,
+  color: "#ADD6FF",
+  paddingInline: 1,
+});</code></pre>
       </section>
     </main>
     <script type="module" src="./main.ts"></script>

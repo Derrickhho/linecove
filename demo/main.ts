@@ -36,7 +36,7 @@ const highlightStyle = { radius: 6, paddingInline: 1, color: highlight };
 const beforeMark = attachMarker(before, [], { radius: 0, paddingInline: 1, color: highlight });
 const afterMark = attachMarker(after, [], highlightStyle);
 
-const liveZones = [document.querySelector("main"), document.querySelector(".tabs"), document.querySelector(".install"), document.querySelector("#radius-list")];
+const liveZones = [document.querySelector("main"), document.querySelector(".tabs"), document.querySelector(".install"), document.querySelector(".usage"), document.querySelector("#radius-list")];
 const lives = liveZones.flatMap((zone) => (zone instanceof HTMLElement ? [attachLiveSelection(zone, highlightStyle)] : []));
 
 type Example = "code" | "poem";

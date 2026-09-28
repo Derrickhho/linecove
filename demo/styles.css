@@ -305,15 +305,29 @@ code {
 
 .poem p + p { margin-top: 2em; }
 
-.install {
+.docs p {
+  margin: 0 0 12px;
+  max-width: 40rem;
+}
+
+.docs code {
+  font-family: "Geist Mono", ui-monospace, monospace;
+  font-size: 13px;
+  font-weight: 400;
+}
+
+.install,
+.usage {
   margin: 0;
   padding: 14px 16px;
   background: var(--surface);
   border: 0.5px solid var(--line);
   border-radius: 16px;
+  overflow: auto;
 }
 
-.install code { font-size: 13px; }
+.install code,
+.usage code { font-size: 13px; }
 
 @media (max-width: 720px) {
   main { padding: 32px 24px 64px; }

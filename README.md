@@ -74,12 +74,14 @@ const d = lineBoxesToPath(
 
 ## Demo
 
+The live demo is at [linecove.vercel.app](https://linecove.vercel.app).
+
 ```sh
 npm install
 npm run demo
 ```
 
-Opens the demo at `http://localhost:5173`.
+Opens the demo locally at `http://localhost:5173`.
 
 ## Develop
 

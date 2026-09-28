@@ -1,17 +1,17 @@
 {
-  "name": "rounded-highlight",
+  "name": "linecove",
   "version": "0.0.1",
   "private": true,
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Derrickhho/rounded-highlight.git"
+    "url": "git+https://github.com/Derrickhho/linecove.git"
   },
   "bugs": {
-    "url": "https://github.com/Derrickhho/rounded-highlight/issues"
+    "url": "https://github.com/Derrickhho/linecove/issues"
   },
-  "homepage": "https://github.com/Derrickhho/rounded-highlight#readme",
-  "description": "Multi-line text highlights with outer corners and inward steps, in the style of VS Code selections.",
+  "homepage": "https://github.com/Derrickhho/linecove#readme",
+  "description": "Linecove draws multi-line text highlights with outer corners and inward steps, in the style of VS Code selections.",
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",

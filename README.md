@@ -1,4 +1,4 @@
-# rounded-highlight
+# linecove
 
 Multi-line text highlights with outer corners and inward steps, in the style of VS Code selections.
 
@@ -7,7 +7,7 @@ The browser selection stays in place, so copy and paste still work. Inside the a
 ## Install
 
 ```sh
-npm install rounded-highlight
+npm install linecove
 ```
 
 The package is ESM and includes TypeScript types. It has no runtime dependencies.
@@ -15,7 +15,7 @@ The package is ESM and includes TypeScript types. It has no runtime dependencies
 ## Use
 
 ```ts
-import { attachLiveSelection } from "rounded-highlight";
+import { attachLiveSelection } from "linecove";
 
 const article = document.querySelector("article");
 if (!article) throw new Error("Missing article");
@@ -61,7 +61,7 @@ The shape is painted as the element's own background, underneath its text. An ex
 `lineBoxesToPath` turns line boxes into one SVG path string. `selectionOutlines` returns the sharp polygons before rounding. Both use the same join rules as the live highlight.
 
 ```ts
-import { lineBoxesToPath } from "rounded-highlight";
+import { lineBoxesToPath } from "linecove";
 
 const d = lineBoxesToPath(
   [

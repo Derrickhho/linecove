@@ -6,40 +6,43 @@
     <title>Linecove</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@100..900&family=Inter:opsz,wght@14..32,100..900&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@100..900&family=Inter:opsz,wght@14..32,100..900&family=Source+Serif+4:opsz,wght@8..60,400&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="./styles.css" />
   </head>
   <body>
     <main>
-      <img class="badge" src="./logo.svg" alt="Linecove" width="59" height="46" />
-      <p class="title">Linecove</p>
-      <p class="lede">
-        A <a href="https://en.wikipedia.org/wiki/Coving_(interior_design)">cove</a> is the inward corner of a text highlight, where a shorter line steps in from a longer one.
-        Customize the color and radius. Try it out below.
-      </p>
-      <p class="links">
-        <a href="https://github.com/Derrickhho/linecove">
-          <svg viewBox="0 0 16 16" aria-hidden="true">
-            <path fill="currentColor" d="M8 0a8 8 0 0 0-2.53 15.59c.4.07.55-.17.55-.38v-1.33c-2.23.48-2.7-1.08-2.7-1.08-.36-.93-.89-1.17-.89-1.17-.73-.5.05-.49.05-.49.8.06 1.23.83 1.23.83.72 1.23 1.88.87 2.34.67.07-.52.28-.87.5-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.6 7.6 0 0 1 4 0c1.53-1.03 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.28.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48v2.19c0 .21.15.46.55.38A8 8 0 0 0 8 0Z" />
-          </svg>
-          <span>View on GitHub</span>
-        </a>
-      </p>
-
-      <div class="panel">
+      <div class="section">
+        <div class="masthead">
+          <img class="badge" src="./logo.svg" alt="Linecove" width="59" height="46" />
+          <p class="links">
+            <a href="https://github.com/Derrickhho/linecove">
+              <svg viewBox="0 0 16 16" aria-hidden="true">
+                <path fill="currentColor" d="M8 0a8 8 0 0 0-2.53 15.59c.4.07.55-.17.55-.38v-1.33c-2.23.48-2.7-1.08-2.7-1.08-.36-.93-.89-1.17-.89-1.17-.73-.5.05-.49.05-.49.8.06 1.23.83 1.23.83.72 1.23 1.88.87 2.34.67.07-.52.28-.87.5-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.6 7.6 0 0 1 4 0c1.53-1.03 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.28.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48v2.19c0 .21.15.46.55.38A8 8 0 0 0 8 0Z" />
+              </svg>
+              <span>View on GitHub</span>
+            </a>
+          </p>
+        </div>
+        <p class="title">Linecove</p>
+        <p class="lede">
+          A <a href="https://en.wikipedia.org/wiki/Coving_(interior_design)">cove</a> is the inward corner of a text highlight, where a shorter line steps in from a longer one.
+          Customize the color and radius. Try it out below.
+        </p>
+        <div class="panel">
         <div class="tabs">
           <div role="tablist" aria-label="Example">
-            <a role="tab" id="tab-code" href="#code" aria-controls="code" aria-selected="true">Code</a>
-            <a role="tab" id="tab-text" href="#poem" aria-controls="poem" aria-selected="false">Text</a>
+            <span id="tab-indicator" class="pointer-events-none absolute inset-y-0 left-0 z-0 rounded-md bg-[var(--fill)]" aria-hidden="true"></span>
+            <a role="tab" id="tab-code" href="#code" aria-controls="code" aria-selected="true" class="relative z-10">Code</a>
+            <a role="tab" id="tab-text" href="#poem" aria-controls="poem" aria-selected="false" class="relative z-10">Text</a>
           </div>
           <div class="settings" id="settings">
             <button type="button" id="settings-toggle" aria-label="Radius" aria-haspopup="listbox" aria-expanded="false" aria-controls="radius-list">
               <span id="radius-value">Radius: 6px</span>
-              <svg viewBox="0 0 16 16" aria-hidden="true">
+              <svg class="transition-transform duration-200" viewBox="0 0 16 16" aria-hidden="true">
                 <path d="M4 6.5 8 10.5 12 6.5" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" />
               </svg>
             </button>
-            <ul id="radius-list" role="listbox" aria-label="Radius" hidden>
+            <ul id="radius-list" role="listbox" aria-label="Radius" class="origin-top-right duration-200 ease-out fill-mode-both" hidden>
               <li role="option" data-radius="2">2px</li>
               <li role="option" data-radius="4">4px</li>
               <li role="option" data-radius="6" aria-selected="true">6px</li>
@@ -71,59 +74,81 @@
 
         <div id="play" hidden>
           <div id="stage">
-            <pre id="code" class="example-code"><code>public void Repeat(int x)
+            <pre id="code" class="example-code"><code class="language-java">String whereYouBelong(You you)
 {
-    if (x &lt; 0)
+    if (you.feelsFree())
     {
-        x = x % width;
-        x = width + x;
+        return "wildflowers";
     }
+    else if (you.sailsAway())
+        return "out at sea";
     else
-        x = x % width;
-    return x;
+        return "somewhere free";
 }</code></pre>
             <div id="poem" class="poem example-text" hidden>
               <p>
-                The river keeps the evening in its pocket.<br />
-                It spends the light on stones,<br />
-                then folds the dark along the bank.
+                You belong among the wildflowers<br />
+                You belong in a boat out at sea<br />
+                Sail away, kill off the hours<br />
+                You belong somewhere you feel free
               </p>
               <p>
-                Where the grass is still deciding<br />
-                whether to be water,<br />
-                a heron stands in the shallows<br />
-                and does not choose.
-              </p>
-              <p>
-                By morning the pocket is empty.<br />
-                The stones remember the light.
+                Run away, find you a lover<br />
+                Go away somewhere all bright and new<br />
+                I have seen no other<br />
+                Who compares with you
               </p>
             </div>
           </div>
         </div>
       </div>
+      </div>
 
-      <section class="docs">
+      <div class="section">
         <h2>Installation</h2>
         <p>The package is ESM and includes TypeScript types. It has no runtime dependencies.</p>
-        <pre class="install"><code>npm install linecove</code></pre>
+        <div class="snippet">
+          <pre class="install"><code class="language-bash">npm install linecove</code></pre>
+          <button type="button" class="copy" aria-label="Copy code">
+            <svg class="copy-icon" viewBox="0 0 16 16" aria-hidden="true">
+              <rect x="6" y="6" width="8" height="8" rx="1.25" fill="none" stroke="currentColor" stroke-width="1.4" />
+              <path d="M10 6V3.75c0-.69-.56-1.25-1.25-1.25h-5C3.06 2.5 2.5 3.06 2.5 3.75v5c0 .69.56 1.25 1.25 1.25H6" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" />
+            </svg>
+            <svg class="copied-icon" viewBox="0 0 16 16" aria-hidden="true">
+              <path d="M3.5 8.5 6.5 11.5 12.5 4.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <div class="section">
         <h2>Usage</h2>
         <p>
           Attach it to an element. The browser selection stays in place, so copy and paste still work.
           Inside that element, the native highlight is hidden and Linecove draws the rounded shape instead.
           Call <code>destroy()</code> when the element goes away.
         </p>
-        <pre class="usage"><code>import { attachLiveSelection } from "linecove";
+        <div class="snippet">
+          <pre class="usage"><code class="language-ts">import { attachLiveSelection } from "linecove";
 
 const article = document.querySelector("article");
 if (!article) throw new Error("Missing article");
 
 const highlight = attachLiveSelection(article, {
   radius: 6,
-  color: "#ADD6FF",
   paddingInline: 1,
 });</code></pre>
-      </section>
+          <button type="button" class="copy" aria-label="Copy code">
+            <svg class="copy-icon" viewBox="0 0 16 16" aria-hidden="true">
+              <rect x="6" y="6" width="8" height="8" rx="1.25" fill="none" stroke="currentColor" stroke-width="1.4" />
+              <path d="M10 6V3.75c0-.69-.56-1.25-1.25-1.25h-5C3.06 2.5 2.5 3.06 2.5 3.75v5c0 .69.56 1.25 1.25 1.25H6" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" />
+            </svg>
+            <svg class="copied-icon" viewBox="0 0 16 16" aria-hidden="true">
+              <path d="M3.5 8.5 6.5 11.5 12.5 4.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+          </button>
+        </div>
+      </div>
     </main>
     <script type="module" src="./main.ts"></script>
   </body>

@@ -1,6 +1,6 @@
 # linecove
 
-Multi-line text highlights with outer corners and inward steps, in the style of VS Code selections.
+Multi-line text highlights with outer corners and inward steps. The fill defaults to the system text selection color.
 
 The browser selection stays in place, so copy and paste still work. Inside the attached element, the native highlight paint is hidden and this library draws the rounded shape instead.
 
@@ -22,7 +22,6 @@ if (!article) throw new Error("Missing article");
 
 const highlight = attachLiveSelection(article, {
   radius: 6,
-  color: "#ADD6FF",
   paddingInline: 1,
 });
 ```
@@ -40,7 +39,7 @@ highlight.destroy();
 | Option | Default | |
 | --- | --- | --- |
 | `radius` | `4` | Corner radius in px. `0` keeps square corners. |
-| `color` | `#ADD6FF` | Fill. This is VS Code's light selection color. |
+| `color` | system selection | Fill. Defaults to the CSS system color `Highlight`, the color the browser uses for selected text. |
 | `paddingInline` | `0` | Extra space on the left and right of each line, in px. |
 | `maxGap` | tallest line | Lines whose vertical gap is larger than this stay separate. Paragraph gaps stay open. |
 | `epsilon` | `0.5` | Edges closer than this are treated as flush. |

@@ -1,3 +1,5 @@
+@tailwind utilities;
+
 :root {
   color-scheme: light;
   --bg: #f7f7f7;
@@ -12,6 +14,8 @@
   --blue-hover: #1d4ed8;
   --selected: #007acc;
   --code: #1a1a1a;
+  --header-gap: 1.5rem;
+  --section-gap: 4.5rem;
 }
 
 * { box-sizing: border-box; }
@@ -22,33 +26,57 @@ body {
   color: var(--ink);
   font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   font-size: 13px;
-  font-weight: 300;
-  line-height: 1.65;
+  font-weight: 400;
+  line-height: 1.35;
 }
 
 main {
-  max-width: 680px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--section-gap);
+  max-width: 760px;
   margin: 0;
   padding: 48px 48px 96px;
+}
+
+.masthead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 0 0 28px;
 }
 
 .badge {
   display: block;
   width: 32px;
   height: auto;
-  margin: 0 0 28px;
+  margin: 0;
 }
 
 .title {
+  display: flex;
+  align-items: center;
   margin: 0;
-  color: inherit;
-  font-size: inherit;
+  color: #111;
+  font-size: 0.875rem;
   font-weight: 500;
-  line-height: inherit;
+  line-height: 1.25rem;
+  letter-spacing: -0.00563rem;
+}
+
+.title::after,
+h2::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  margin-left: 0.5rem;
+  background: #e0e0e0;
 }
 
 h2 {
-  margin: 36px 0 12px;
+  display: flex;
+  align-items: center;
+  margin: 0 0 var(--header-gap);
   color: var(--strong);
   font-size: 13px;
   font-weight: 450;
@@ -56,8 +84,11 @@ h2 {
 }
 
 .lede {
-  margin: 6px 0 0;
-  max-width: 40rem;
+  margin: var(--header-gap) 0 0;
+  color: #111;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  letter-spacing: -0.00563rem;
 }
 
 .lede a {
@@ -74,7 +105,7 @@ h2 {
   display: flex;
   flex-wrap: wrap;
   gap: 8px 20px;
-  margin: 16px 0 28px;
+  margin: 0;
 }
 
 .links a {
@@ -102,9 +133,10 @@ h2 {
 }
 
 .panel {
+  margin-top: 28px;
   background: var(--surface);
   border: 0.5px solid var(--line);
-  border-radius: 16px;
+  border-radius: 12px;
 }
 
 .tabs {
@@ -118,6 +150,7 @@ h2 {
 }
 
 .tabs [role="tablist"] {
+  position: relative;
   display: flex;
   gap: 4px;
 }
@@ -143,8 +176,12 @@ h2 {
 }
 
 .tabs [role="tab"][aria-selected="true"] {
-  background: var(--fill);
+  background: transparent;
   color: var(--strong);
+}
+
+#tab-indicator {
+  transition: transform 200ms ease, width 200ms ease;
 }
 
 .settings {
@@ -172,6 +209,11 @@ h2 {
 .settings > button svg {
   width: 16px;
   height: 16px;
+  transition: transform 200ms ease;
+}
+
+.settings > button[aria-expanded="true"] svg {
+  transform: rotate(180deg);
 }
 
 .settings > button:hover,
@@ -238,7 +280,7 @@ h2 {
   align-items: center;
   gap: 6px;
   margin: 0 0 14px;
-  color: var(--quiet);
+  color: #9a9a9a;
   font-size: 13px;
   font-weight: 500;
   line-height: 1.4;
@@ -258,6 +300,21 @@ h2 {
 .pane,
 #stage {
   padding: 18px 16px 24px;
+}
+
+.pane {
+  display: grid;
+  align-content: start;
+}
+
+.pane > .example-code,
+.pane > .example-text {
+  grid-area: 2 / 1;
+}
+
+.example-code.is-inactive,
+.example-text.is-inactive {
+  visibility: hidden;
 }
 
 #compare ::selection {
@@ -294,10 +351,10 @@ code {
 .poem {
   margin: 0;
   max-width: 40rem;
-  font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  font-size: 13px;
-  font-weight: 300;
-  line-height: 1.65;
+  font-family: "Source Serif 4", Georgia, "Iowan Old Style", serif;
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 1.6;
   color: var(--ink);
 }
 
@@ -305,25 +362,71 @@ code {
 
 .poem p + p { margin-top: 2em; }
 
-.docs p {
+.section h2 + p {
   margin: 0 0 12px;
   max-width: 40rem;
 }
 
-.docs code {
+.section p code {
   font-family: "Geist Mono", ui-monospace, monospace;
   font-size: 13px;
   font-weight: 400;
 }
 
+.snippet {
+  position: relative;
+}
+
 .install,
 .usage {
   margin: 0;
-  padding: 14px 16px;
+  padding: 14px 44px 14px 16px;
   background: var(--surface);
   border: 0.5px solid var(--line);
-  border-radius: 16px;
+  border-radius: 12px;
   overflow: auto;
+}
+
+.copy {
+  position: absolute;
+  top: calc(14px + 0.5px);
+  right: 12px;
+  display: grid;
+  place-items: center;
+  width: calc(13px * 1.65);
+  height: calc(13px * 1.65);
+  padding: 0;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--quiet);
+  cursor: pointer;
+}
+
+.copy svg {
+  width: 14px;
+  height: 14px;
+}
+
+.copy .copied-icon,
+.copy[data-copied="true"] .copy-icon {
+  display: none;
+}
+
+.copy[data-copied="true"] .copied-icon {
+  display: block;
+}
+
+.copy:hover,
+.copy:active,
+.copy[data-copied="true"] {
+  background: var(--fill);
+  color: var(--strong);
+}
+
+.install pre,
+.usage pre {
+  background: transparent;
 }
 
 .install code,

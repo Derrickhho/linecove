@@ -14,11 +14,12 @@ const settings = document.querySelector<HTMLElement>("#settings");
 const settingsToggle = document.querySelector<HTMLButtonElement>("#settings-toggle");
 const radiusList = document.querySelector<HTMLElement>("#radius-list");
 const radiusOptions = Array.from(document.querySelectorAll<HTMLElement>("#radius-list [data-radius]"));
+const tabIndicator = document.querySelector<HTMLElement>("#tab-indicator");
 
 if (
   !before || !after || !play || !tabCode || !tabText ||
   !stage || !code || !poem || !radiusValue ||
-  !settings || !settingsToggle || !radiusList
+  !settings || !settingsToggle || !radiusList || !tabIndicator
 ) {
   throw new Error("Demo markup is missing an expected element.");
 }
@@ -31,10 +32,31 @@ for (const pane of [before, after]) {
   }
 }
 
-const highlight = "#ADD6FF";
-const highlightStyle = { radius: 6, paddingInline: 1, color: highlight };
-const beforeMark = attachMarker(before, [], { radius: 0, paddingInline: 1, color: highlight });
+const highlightStyle = { radius: 6, paddingInline: 1 };
+const beforeMark = attachMarker(before, [], { radius: 0, paddingInline: 1 });
 const afterMark = attachMarker(after, [], highlightStyle);
+
+for (const snippet of document.querySelectorAll<HTMLElement>(".snippet")) {
+  const button = snippet.querySelector<HTMLButtonElement>(".copy");
+  const code = snippet.querySelector("code");
+  if (!button || !code) continue;
+  let reset = 0;
+  button.addEventListener("click", async () => {
+    const text = code.innerText.replace(/[ \t]+$/gm, "").replace(/\n$/, "");
+    try {
+      await navigator.clipboard.writeText(text);
+    } catch {
+      return;
+    }
+    button.dataset.copied = "true";
+    button.setAttribute("aria-label", "Copied");
+    window.clearTimeout(reset);
+    reset = window.setTimeout(() => {
+      delete button.dataset.copied;
+      button.setAttribute("aria-label", "Copy code");
+    }, 2000);
+  });
+}
 
 const liveZones = [document.querySelector("main"), document.querySelector(".tabs"), document.querySelector(".install"), document.querySelector(".usage"), document.querySelector("#radius-list")];
 const lives = liveZones.flatMap((zone) => (zone instanceof HTMLElement ? [attachLiveSelection(zone, highlightStyle)] : []));
@@ -167,22 +189,56 @@ function selectSample(): void {
   selection.addRange(sampleRange);
 }
 
+const menuEnter = ["animate-in", "fade-in-0", "zoom-in-95", "slide-in-from-top-2"];
+const menuExit = ["animate-out", "fade-out-0", "zoom-out-95", "slide-out-to-top-2"];
+
+function finishClose(event: AnimationEvent): void {
+  if (event.target !== radiusList || event.animationName !== "exit") return;
+  radiusList!.hidden = true;
+  radiusList!.removeEventListener("animationend", finishClose);
+}
+
 function setMenuOpen(open: boolean): void {
   settingsToggle!.setAttribute("aria-expanded", String(open));
-  radiusList!.hidden = !open;
+  radiusList!.removeEventListener("animationend", finishClose);
+  if (open) {
+    radiusList!.hidden = false;
+    radiusList!.classList.remove(...menuExit);
+    void radiusList!.offsetWidth;
+    radiusList!.classList.add(...menuEnter);
+    return;
+  }
+  if (radiusList!.hidden) return;
+  radiusList!.classList.remove(...menuEnter);
+  void radiusList!.offsetWidth;
+  radiusList!.classList.add(...menuExit);
+  radiusList!.addEventListener("animationend", finishClose);
+}
+
+function placeTabIndicator(): void {
+  const tab = example === "code" ? tabCode! : tabText!;
+  const list = tab.parentElement;
+  if (!list) return;
+  const listBox = list.getBoundingClientRect();
+  const tabBox = tab.getBoundingClientRect();
+  tabIndicator!.style.width = `${tabBox.width}px`;
+  tabIndicator!.style.transform = `translateX(${tabBox.left - listBox.left}px)`;
 }
 
 function showExample(next: Example): void {
   example = next;
   const showingCode = next === "code";
   for (const block of document.querySelectorAll<HTMLElement>(".example-code")) {
-    block.hidden = !showingCode;
+    block.hidden = false;
+    block.classList.toggle("is-inactive", !showingCode);
   }
   for (const block of document.querySelectorAll<HTMLElement>(".example-text")) {
-    block.hidden = showingCode;
+    block.hidden = false;
+    block.classList.toggle("is-inactive", showingCode);
   }
   tabCode!.setAttribute("aria-selected", String(showingCode));
   tabText!.setAttribute("aria-selected", String(!showingCode));
+  placeTabIndicator();
   if (play!.hidden) {
     requestAnimationFrame(() => selectCompareSample());
     return;
@@ -227,6 +283,7 @@ document.addEventListener("keydown", (event) => {
   if (event.key === "Escape") setMenuOpen(false);
 });
 document.addEventListener("selectionchange", mirrorSelection);
+window.addEventListener("resize", placeTabIndicator);
 
 const params = new URLSearchParams(location.search);
 showExample(params.get("example") === "poem" ? "poem" : "code");

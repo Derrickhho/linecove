@@ -1,7 +1,7 @@
 import { lineBoxesToPath, type LineBox, type PathOptions } from "./geometry.js";
 
 export interface HighlightStyle extends PathOptions {
-  /** Fill color of the highlight. Default `#ADD6FF`, VS Code's light selection. */
+  /** Fill color. Defaults to the system text selection color, CSS `Highlight`. */
   color?: string;
   /** Extra space on the left and right of each line box, in px. Default 0. */
   paddingInline?: number;
@@ -31,7 +31,7 @@ export function attachLiveSelection(
   let maxGap = style.maxGap;
   let epsilon = style.epsilon ?? 0.5;
   let paddingInline = style.paddingInline ?? 0;
-  let color = style.color ?? "#ADD6FF";
+  let color = style.color;
   let frame = 0;
 
   const paint = () => {
@@ -45,7 +45,7 @@ export function attachLiveSelection(
         maxGap,
         epsilon,
       }),
-      color,
+      color ?? systemHighlightColor(doc),
       width,
       height,
     );
@@ -121,7 +121,7 @@ export function attachMarker(
   let maxGap = style.maxGap;
   let epsilon = style.epsilon ?? 0.5;
   let paddingInline = style.paddingInline ?? 0;
-  let color = style.color ?? "#ADD6FF";
+  let color = style.color;
   let frame = 0;
   let current = ranges.map((range) => range.cloneRange());
 
@@ -136,7 +136,7 @@ export function attachMarker(
         maxGap,
         epsilon,
       }),
-      color,
+      color ?? systemHighlightColor(doc),
       width,
       height,
     );
@@ -266,6 +266,28 @@ function restoreBackground(container: HTMLElement, inline: BackgroundSnapshot) {
   container.style.backgroundRepeat = inline.repeat;
   container.style.backgroundPosition = inline.position;
   container.style.backgroundSize = inline.size;
+}
+
+const highlightProbes = new WeakMap<Document, HTMLSpanElement>();
+
+/** The CSS system color `Highlight`, resolved in this document so the SVG fill can use it. */
+function systemHighlightColor(doc: Document): string {
+  const view = doc.defaultView;
+  const parent = doc.body ?? doc.documentElement;
+  if (!view || !parent) return "Highlight";
+
+  let probe = highlightProbes.get(doc);
+  if (!probe?.isConnected) {
+    probe = doc.createElement("span");
+    probe.setAttribute("aria-hidden", "true");
+    probe.style.cssText = "position:fixed;left:0;top:0;width:0;height:0;overflow:hidden;pointer-events:none;background-color:Highlight";
+    parent.append(probe);
+    highlightProbes.set(doc, probe);
+  }
+
+  const color = view.getComputedStyle(probe).backgroundColor;
+  if (!color || color === "transparent" || color === "rgba(0, 0, 0, 0)") return "Highlight";
+  return color;
 }
 
 function escapeAttr(value: string): string {

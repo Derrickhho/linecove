@@ -30,19 +30,16 @@
         </p>
         <div class="panel">
         <div class="tabs">
-          <div role="tablist" aria-label="Example">
-            <span id="tab-indicator" class="pointer-events-none absolute inset-y-0 left-0 z-0 rounded-md bg-[var(--fill)]" aria-hidden="true"></span>
-            <a role="tab" id="tab-code" href="#code" aria-controls="code" aria-selected="true" class="relative z-10">Code</a>
-            <a role="tab" id="tab-text" href="#poem" aria-controls="poem" aria-selected="false" class="relative z-10">Text</a>
+          <div class="t-tabs" role="tablist" aria-label="Example">
+            <span id="tab-indicator" class="t-tabs-pill" aria-hidden="true"></span>
+            <a role="tab" id="tab-code" href="#code" aria-controls="code" aria-selected="true" class="t-tab">Code</a>
+            <a role="tab" id="tab-text" href="#poem" aria-controls="poem" aria-selected="false" class="t-tab">Text</a>
           </div>
           <div class="settings" id="settings">
             <button type="button" id="settings-toggle" aria-label="Radius" aria-haspopup="listbox" aria-expanded="false" aria-controls="radius-list">
               <span id="radius-value">Radius: 6px</span>
-              <svg class="transition-transform duration-200" viewBox="0 0 16 16" aria-hidden="true">
-                <path d="M4 6.5 8 10.5 12 6.5" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" />
-              </svg>
             </button>
-            <ul id="radius-list" role="listbox" aria-label="Radius" class="origin-top-right duration-200 ease-out fill-mode-both" hidden>
+            <ul id="radius-list" class="t-dropdown" data-origin="top-right" role="listbox" aria-label="Radius">
               <li role="option" data-radius="2">2px</li>
               <li role="option" data-radius="4">4px</li>
               <li role="option" data-radius="6" aria-selected="true">6px</li>
@@ -109,12 +106,12 @@
         <p>The package is ESM and includes TypeScript types. It has no runtime dependencies.</p>
         <div class="snippet">
           <pre class="install"><code class="language-bash">npm install linecove</code></pre>
-          <button type="button" class="copy" aria-label="Copy code">
-            <svg class="copy-icon" viewBox="0 0 16 16" aria-hidden="true">
+          <button type="button" class="copy t-icon-swap" data-state="a" aria-label="Copy code">
+            <svg class="t-icon copy-icon" data-icon="a" viewBox="0 0 16 16" aria-hidden="true">
               <rect x="6" y="6" width="8" height="8" rx="1.25" fill="none" stroke="currentColor" stroke-width="1.4" />
               <path d="M10 6V3.75c0-.69-.56-1.25-1.25-1.25h-5C3.06 2.5 2.5 3.06 2.5 3.75v5c0 .69.56 1.25 1.25 1.25H6" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" />
             </svg>
-            <svg class="copied-icon" viewBox="0 0 16 16" aria-hidden="true">
+            <svg class="t-icon copied-icon" data-icon="b" viewBox="0 0 16 16" aria-hidden="true">
               <path d="M3.5 8.5 6.5 11.5 12.5 4.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
             </svg>
           </button>
@@ -138,12 +135,12 @@ const highlight = attachLiveSelection(article, {
   radius: 6,
   paddingInline: 1,
 });</code></pre>
-          <button type="button" class="copy" aria-label="Copy code">
-            <svg class="copy-icon" viewBox="0 0 16 16" aria-hidden="true">
+          <button type="button" class="copy t-icon-swap" data-state="a" aria-label="Copy code">
+            <svg class="t-icon copy-icon" data-icon="a" viewBox="0 0 16 16" aria-hidden="true">
               <rect x="6" y="6" width="8" height="8" rx="1.25" fill="none" stroke="currentColor" stroke-width="1.4" />
               <path d="M10 6V3.75c0-.69-.56-1.25-1.25-1.25h-5C3.06 2.5 2.5 3.06 2.5 3.75v5c0 .69.56 1.25 1.25 1.25H6" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" />
             </svg>
-            <svg class="copied-icon" viewBox="0 0 16 16" aria-hidden="true">
+            <svg class="t-icon copied-icon" data-icon="b" viewBox="0 0 16 16" aria-hidden="true">
               <path d="M3.5 8.5 6.5 11.5 12.5 4.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
             </svg>
           </button>

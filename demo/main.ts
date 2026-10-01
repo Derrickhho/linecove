@@ -49,10 +49,12 @@ for (const snippet of document.querySelectorAll<HTMLElement>(".snippet")) {
       return;
     }
     button.dataset.copied = "true";
+    button.dataset.state = "b";
     button.setAttribute("aria-label", "Copied");
     window.clearTimeout(reset);
     reset = window.setTimeout(() => {
       delete button.dataset.copied;
+      button.dataset.state = "a";
       button.setAttribute("aria-label", "Copy code");
     }, 2000);
   });
@@ -63,6 +65,7 @@ const lives = liveZones.flatMap((zone) => (zone instanceof HTMLElement ? [attach
 
 type Example = "code" | "poem";
 let example: Example = "code";
+let tabsPlaced = false;
 
 function paneOf(node: Node | null): HTMLElement | null {
   const element = node instanceof Element ? node : node?.parentElement;
@@ -137,7 +140,13 @@ function clipRangeToRoot(root: HTMLElement, range: Range): Range | null {
   return clipped.collapsed ? null : clipped;
 }
 
+function selectionInSettings(): boolean {
+  const node = document.getSelection()?.anchorNode;
+  return !!node && settings!.contains(node);
+}
+
 function mirrorSelection(): void {
+  if (selectionInSettings()) return;
   const selection = document.getSelection();
   const beforeRoot = contentRoot(before!);
   const afterRoot = contentRoot(after!);
@@ -189,40 +198,40 @@ function selectSample(): void {
   selection.addRange(sampleRange);
 }
 
-const menuEnter = ["animate-in", "fade-in-0", "zoom-in-95", "slide-in-from-top-2"];
-const menuExit = ["animate-out", "fade-out-0", "zoom-out-95", "slide-out-to-top-2"];
-
-function finishClose(event: AnimationEvent): void {
-  if (event.target !== radiusList || event.animationName !== "exit") return;
-  radiusList!.hidden = true;
-  radiusList!.removeEventListener("animationend", finishClose);
-}
+const dropdownCloseMs = parseFloat(
+  getComputedStyle(document.documentElement).getPropertyValue("--dropdown-close-dur"),
+) || 150;
+let dropdownTimer = 0;
 
 function setMenuOpen(open: boolean): void {
+  const menu = radiusList!;
   settingsToggle!.setAttribute("aria-expanded", String(open));
-  radiusList!.removeEventListener("animationend", finishClose);
+  window.clearTimeout(dropdownTimer);
   if (open) {
-    radiusList!.hidden = false;
-    radiusList!.classList.remove(...menuExit);
-    void radiusList!.offsetWidth;
-    radiusList!.classList.add(...menuEnter);
+    menu.classList.remove("is-closing");
+    menu.classList.add("is-open");
     return;
   }
-  if (radiusList!.hidden) return;
-  radiusList!.classList.remove(...menuEnter);
-  void radiusList!.offsetWidth;
-  radiusList!.classList.add(...menuExit);
-  radiusList!.addEventListener("animationend", finishClose);
+  if (!menu.classList.contains("is-open")) return;
+  menu.classList.remove("is-open");
+  menu.classList.add("is-closing");
+  dropdownTimer = window.setTimeout(() => menu.classList.remove("is-closing"), dropdownCloseMs);
 }
 
-function placeTabIndicator(): void {
+function placeTabIndicator(animate: boolean): void {
   const tab = example === "code" ? tabCode! : tabText!;
-  const list = tab.parentElement;
-  if (!list) return;
-  const listBox = list.getBoundingClientRect();
-  const tabBox = tab.getBoundingClientRect();
-  tabIndicator!.style.width = `${tabBox.width}px`;
-  tabIndicator!.style.transform = `translateX(${tabBox.left - listBox.left}px)`;
+  const pill = tabIndicator!;
+  if (!animate) {
+    const prev = pill.style.transition;
+    pill.style.transition = "none";
+    pill.style.transform = `translateX(${tab.offsetLeft}px)`;
+    pill.style.width = `${tab.offsetWidth}px`;
+    void pill.offsetWidth;
+    pill.style.transition = prev;
+    return;
+  }
+  pill.style.transform = `translateX(${tab.offsetLeft}px)`;
+  pill.style.width = `${tab.offsetWidth}px`;
 }
 
 function showExample(next: Example): void {
@@ -238,7 +247,8 @@ function showExample(next: Example): void {
   }
   tabCode!.setAttribute("aria-selected", String(showingCode));
   tabText!.setAttribute("aria-selected", String(!showingCode));
-  placeTabIndicator();
+  placeTabIndicator(tabsPlaced);
+  tabsPlaced = true;
   if (play!.hidden) {
     requestAnimationFrame(() => selectCompareSample());
     return;
@@ -249,8 +259,57 @@ function showExample(next: Example): void {
   });
 }
 
+function setRadiusLabel(next: number): void {
+  const nextText = `Radius: ${next}px`;
+  const node = radiusValue!.firstChild;
+  if (!(node instanceof Text)) {
+    radiusValue!.textContent = nextText;
+    return;
+  }
+  const selection = document.getSelection();
+  const range = selection && selection.rangeCount > 0 ? selection.getRangeAt(0) : null;
+  const covered =
+    !!range &&
+    !range.collapsed &&
+    range.startContainer === node &&
+    range.endContainer === node &&
+    range.startOffset === 0 &&
+    range.endOffset === node.length;
+  node.data = nextText;
+  if (covered && range) range.setEnd(node, node.length);
+}
+
+function savedSelection(): Range[] {
+  const selection = document.getSelection();
+  if (!selection || selection.rangeCount === 0) return [];
+  return Array.from({ length: selection.rangeCount }, (_, index) => selection.getRangeAt(index).cloneRange());
+}
+
+function restoreSelection(ranges: Range[]): void {
+  const selection = document.getSelection();
+  if (!selection || ranges.length === 0) return;
+  const unchanged =
+    selection.rangeCount === ranges.length &&
+    ranges.every((range, index) => {
+      const current = selection.getRangeAt(index);
+      return (
+        current.startContainer === range.startContainer &&
+        current.startOffset === range.startOffset &&
+        current.endContainer === range.endContainer &&
+        current.endOffset === range.endOffset
+      );
+    });
+  if (unchanged) return;
+  selection.removeAllRanges();
+  for (const range of ranges) {
+    if (range.startContainer.isConnected && range.endContainer.isConnected) selection.addRange(range);
+  }
+}
+
+let preservedSelection: Range[] = [];
+
 function applyRadius(next: number): void {
-  radiusValue!.textContent = `Radius: ${next}px`;
+  setRadiusLabel(next);
   afterMark.setStyle({ radius: next });
   for (const live of lives) live.setStyle({ radius: next });
   for (const option of radiusOptions) {
@@ -266,6 +325,14 @@ tabCode.addEventListener("click", (event) => {
 tabText.addEventListener("click", (event) => {
   event.preventDefault();
   showExample("poem");
+});
+settings.addEventListener("mousedown", (event) => {
+  if (event.button !== 0) return;
+  preservedSelection = savedSelection();
+  event.preventDefault();
+});
+settings.addEventListener("mouseup", () => {
+  restoreSelection(preservedSelection);
 });
 settingsToggle.addEventListener("click", () => {
   setMenuOpen(settingsToggle.getAttribute("aria-expanded") !== "true");
@@ -283,7 +350,7 @@ document.addEventListener("keydown", (event) => {
   if (event.key === "Escape") setMenuOpen(false);
 });
 document.addEventListener("selectionchange", mirrorSelection);
-window.addEventListener("resize", placeTabIndicator);
+window.addEventListener("resize", () => placeTabIndicator(false));
 
 const params = new URLSearchParams(location.search);
 showExample(params.get("example") === "poem" ? "poem" : "code");

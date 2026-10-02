@@ -3,9 +3,7 @@ import { attachMarker } from "../src/dom.ts";
 import { attachLiveSelection } from "../src/index.ts";
 
 // Initialize Vercel Web Analytics
-inject({
-  mode: import.meta.env.PROD ? 'production' : 'development',
-});
+inject();
 
 const before = document.querySelector<HTMLElement>("#before");
 const after = document.querySelector<HTMLElement>("#after");

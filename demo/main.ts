@@ -1,5 +1,8 @@
+import { inject } from "@vercel/analytics";
 import { attachMarker } from "../src/dom.ts";
 import { attachLiveSelection } from "../src/index.ts";
+
+inject();
 
 const before = document.querySelector<HTMLElement>("#before");
 const after = document.querySelector<HTMLElement>("#after");

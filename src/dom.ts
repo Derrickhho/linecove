@@ -34,8 +34,7 @@ export function attachLiveSelection(
   let color = style.color;
 
   const paint = () => {
-    const width = Math.max(container.scrollWidth, container.clientWidth);
-    const height = Math.max(container.scrollHeight, container.clientHeight);
+    const { width, height } = contentBox(container, layer.svg);
     paintLayer(
       layer,
       lineBoxesToPath(measureRanges(container, selectionRanges(container), paddingInline, layer.svg), {
@@ -105,8 +104,7 @@ export function attachMarker(
   let current = ranges.map((range) => range.cloneRange());
 
   const paint = () => {
-    const width = Math.max(container.scrollWidth, container.clientWidth);
-    const height = Math.max(container.scrollHeight, container.clientHeight);
+    const { width, height } = contentBox(container, layer.svg);
     paintLayer(
       layer,
       lineBoxesToPath(measureRanges(container, current, paddingInline, layer.svg), {
@@ -222,7 +220,7 @@ function mountHighlightLayer(container: HTMLElement): HighlightLayer {
   svg.append(path);
   svg.setAttribute("aria-hidden", "true");
   svg.dataset.linecoveHighlight = "";
-  svg.style.cssText = "position:absolute;left:0;top:0;overflow:hidden;pointer-events:none;user-select:none;-webkit-user-select:none;z-index:-1";
+  svg.style.cssText = "position:absolute;left:0;top:0;width:0;height:0;overflow:hidden;pointer-events:none;user-select:none;-webkit-user-select:none;z-index:-1";
 
   const previous = {
     position: container.style.position,
@@ -244,7 +242,22 @@ function mountHighlightLayer(container: HTMLElement): HighlightLayer {
   };
 }
 
+/** Size of the element without the highlight SVG. The SVG's default 300×150 box would otherwise become the scroll height. */
+function contentBox(container: HTMLElement, svg: SVGSVGElement): { width: number; height: number } {
+  const widthStyle = svg.style.width;
+  const heightStyle = svg.style.height;
+  svg.style.width = "0px";
+  svg.style.height = "0px";
+  const width = Math.max(container.scrollWidth, container.clientWidth);
+  const height = Math.max(container.scrollHeight, container.clientHeight);
+  svg.style.width = widthStyle;
+  svg.style.height = heightStyle;
+  return { width, height };
+}
+
 function paintLayer(layer: HighlightLayer, d: string, color: string, width: number, height: number) {
+  layer.svg.style.width = "";
+  layer.svg.style.height = "";
   const widthAttr = String(width);
   const heightAttr = String(height);
   const viewBox = `0 0 ${width} ${height}`;

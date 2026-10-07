@@ -503,6 +503,15 @@ code {
   overflow: auto;
 }
 
+.install {
+  overflow: hidden;
+}
+
+.install pre,
+.install code {
+  white-space: nowrap;
+}
+
 .t-icon-swap {
   position: relative;
   display: inline-grid;

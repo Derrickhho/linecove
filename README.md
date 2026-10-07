@@ -53,7 +53,7 @@ Each selected line becomes a box as tall as the element's computed line height. 
 - Flush edges stay straight.
 - Lines that do not touch, because of a large vertical gap or no horizontal overlap, stay separate shapes with ordinary outer corners.
 
-The shape is painted as the element's own background, underneath its text. An existing background color is left in place. An existing background image is kept behind the highlight. `destroy()` restores the background it replaced.
+The shape is painted underneath the text, on top of any background the element already has. `destroy()` removes it.
 
 ## Lower-level helpers
 

@@ -25,22 +25,20 @@ export function attachLiveSelection(
   const doc = container.ownerDocument;
   const view = doc.defaultView;
   const styleEl = mountHighlightRoot(container);
-  const background = rememberBackground(container);
+  const layer = mountHighlightLayer(container);
 
   let radius = style.radius ?? 4;
   let maxGap = style.maxGap;
   let epsilon = style.epsilon ?? 0.5;
   let paddingInline = style.paddingInline ?? 0;
   let color = style.color;
-  let frame = 0;
 
   const paint = () => {
     const width = Math.max(container.scrollWidth, container.clientWidth);
     const height = Math.max(container.scrollHeight, container.clientHeight);
-    paintBackground(
-      container,
-      background,
-      lineBoxesToPath(measureRanges(container, selectionRanges(container), paddingInline), {
+    paintLayer(
+      layer,
+      lineBoxesToPath(measureRanges(container, selectionRanges(container), paddingInline, layer.svg), {
         radius,
         maxGap,
         epsilon,
@@ -51,30 +49,12 @@ export function attachLiveSelection(
     );
   };
 
-  const schedule = () => {
-    if (!view) {
-      paint();
-      return;
-    }
-    if (frame) return;
-    frame = view.requestAnimationFrame(() => {
-      frame = 0;
-      paint();
-    });
-  };
+  const binding = bindFrame(view, paint);
 
-  const paintNow = () => {
-    if (view && frame) {
-      view.cancelAnimationFrame(frame);
-      frame = 0;
-    }
-    paint();
-  };
-
-  doc.addEventListener("selectionchange", schedule);
-  doc.addEventListener("scroll", schedule, true);
-  view?.addEventListener("resize", schedule);
-  const observer = new ResizeObserver(schedule);
+  doc.addEventListener("selectionchange", binding.schedule);
+  doc.addEventListener("scroll", binding.schedule, true);
+  view?.addEventListener("resize", binding.schedule);
+  const observer = new ResizeObserver(binding.schedule);
   observer.observe(container);
 
   return {
@@ -84,17 +64,17 @@ export function attachLiveSelection(
       if (next.maxGap !== undefined) maxGap = next.maxGap;
       if (next.epsilon !== undefined) epsilon = next.epsilon;
       if (next.paddingInline !== undefined) paddingInline = next.paddingInline;
-      paintNow();
+      binding.paintNow();
     },
-    refresh: paintNow,
+    refresh: binding.paintNow,
     destroy() {
-      if (view && frame) view.cancelAnimationFrame(frame);
+      binding.destroy();
       observer.disconnect();
-      doc.removeEventListener("selectionchange", schedule);
-      doc.removeEventListener("scroll", schedule, true);
-      view?.removeEventListener("resize", schedule);
+      doc.removeEventListener("selectionchange", binding.schedule);
+      doc.removeEventListener("scroll", binding.schedule, true);
+      view?.removeEventListener("resize", binding.schedule);
       styleEl.remove();
-      restoreBackground(container, background.inline);
+      layer.restore();
       container.removeAttribute("data-rounded-highlight");
     },
   };
@@ -115,23 +95,21 @@ export function attachMarker(
 ): MarkerHandle {
   const doc = container.ownerDocument;
   const view = doc.defaultView;
-  const background = rememberBackground(container);
+  const layer = mountHighlightLayer(container);
 
   let radius = style.radius ?? 4;
   let maxGap = style.maxGap;
   let epsilon = style.epsilon ?? 0.5;
   let paddingInline = style.paddingInline ?? 0;
   let color = style.color;
-  let frame = 0;
   let current = ranges.map((range) => range.cloneRange());
 
   const paint = () => {
     const width = Math.max(container.scrollWidth, container.clientWidth);
     const height = Math.max(container.scrollHeight, container.clientHeight);
-    paintBackground(
-      container,
-      background,
-      lineBoxesToPath(measureRanges(container, current, paddingInline), {
+    paintLayer(
+      layer,
+      lineBoxesToPath(measureRanges(container, current, paddingInline, layer.svg), {
         radius,
         maxGap,
         epsilon,
@@ -142,36 +120,18 @@ export function attachMarker(
     );
   };
 
-  const schedule = () => {
-    if (!view) {
-      paint();
-      return;
-    }
-    if (frame) return;
-    frame = view.requestAnimationFrame(() => {
-      frame = 0;
-      paint();
-    });
-  };
+  const binding = bindFrame(view, paint);
 
-  const paintNow = () => {
-    if (view && frame) {
-      view.cancelAnimationFrame(frame);
-      frame = 0;
-    }
-    paint();
-  };
-
-  doc.addEventListener("scroll", schedule, true);
-  view?.addEventListener("resize", schedule);
-  const observer = new ResizeObserver(schedule);
+  doc.addEventListener("scroll", binding.schedule, true);
+  view?.addEventListener("resize", binding.schedule);
+  const observer = new ResizeObserver(binding.schedule);
   observer.observe(container);
-  paintNow();
+  binding.paintNow();
 
   return {
     setRanges(next) {
       current = next.map((range) => range.cloneRange());
-      paintNow();
+      binding.paintNow();
     },
     setStyle(next) {
       if (next.radius !== undefined) radius = next.radius;
@@ -179,15 +139,52 @@ export function attachMarker(
       if (next.maxGap !== undefined) maxGap = next.maxGap;
       if (next.epsilon !== undefined) epsilon = next.epsilon;
       if (next.paddingInline !== undefined) paddingInline = next.paddingInline;
-      paintNow();
+      binding.paintNow();
     },
-    refresh: paintNow,
+    refresh: binding.paintNow,
     destroy() {
-      if (view && frame) view.cancelAnimationFrame(frame);
+      binding.destroy();
       observer.disconnect();
-      doc.removeEventListener("scroll", schedule, true);
-      view?.removeEventListener("resize", schedule);
-      restoreBackground(container, background.inline);
+      doc.removeEventListener("scroll", binding.schedule, true);
+      view?.removeEventListener("resize", binding.schedule);
+      layer.restore();
+    },
+  };
+}
+
+/** Coalesce selection changes to one paint per frame, on every browser. */
+function bindFrame(
+  view: Window | null,
+  paint: () => void,
+): { schedule: () => void; paintNow: () => void; destroy: () => void } {
+  let frame = 0;
+  let dead = false;
+  const paintNow = () => {
+    if (dead) return;
+    if (view && frame) {
+      view.cancelAnimationFrame(frame);
+      frame = 0;
+    }
+    paint();
+  };
+  return {
+    schedule() {
+      if (dead) return;
+      if (!view) {
+        paint();
+        return;
+      }
+      if (frame) return;
+      frame = view.requestAnimationFrame(() => {
+        frame = 0;
+        if (!dead) paint();
+      });
+    },
+    paintNow,
+    destroy() {
+      dead = true;
+      if (view && frame) view.cancelAnimationFrame(frame);
+      frame = 0;
     },
   };
 }
@@ -199,73 +196,67 @@ function mountHighlightRoot(container: HTMLElement): HTMLStyleElement {
   const root = `[data-rounded-highlight="${token}"]`;
   const styleEl = doc.createElement("style");
   styleEl.textContent =
-    `${root}::selection,${root} *::selection{background:transparent;color:inherit;}`;
+    `${root}::selection,${root} *::selection,${root}::-webkit-selection,${root} *::-webkit-selection{background-color:transparent;color:inherit;}`;
   doc.head.append(styleEl);
   return styleEl;
 }
 
-interface BackgroundSnapshot {
-  image: string;
-  repeat: string;
-  position: string;
-  size: string;
+interface HighlightLayer {
+  svg: SVGSVGElement;
+  path: SVGPathElement;
+  restore: () => void;
 }
 
-function rememberBackground(container: HTMLElement): { inline: BackgroundSnapshot; painted: BackgroundSnapshot } {
+const SVG_NS = "http://www.w3.org/2000/svg";
+
+/**
+ * One SVG, updated by rewriting its path. Replacing a data-URL background
+ * makes Safari decode a new image on every character and the drag stutters.
+ * `isolation` keeps this z-index:-1 shape behind the glyphs, including when
+ * the selection covers the whole container.
+ */
+function mountHighlightLayer(container: HTMLElement): HighlightLayer {
+  const doc = container.ownerDocument;
+  const svg = doc.createElementNS(SVG_NS, "svg");
+  const path = doc.createElementNS(SVG_NS, "path");
+  svg.append(path);
+  svg.setAttribute("aria-hidden", "true");
+  svg.dataset.linecoveHighlight = "";
+  svg.style.cssText = "position:absolute;left:0;top:0;overflow:hidden;pointer-events:none;user-select:none;-webkit-user-select:none;z-index:-1";
+
+  const previous = {
+    position: container.style.position,
+    isolation: container.style.isolation,
+  };
   const computed = getComputedStyle(container);
+  if (computed.position === "static") container.style.position = "relative";
+  if (computed.isolation !== "isolate") container.style.isolation = "isolate";
+  container.prepend(svg);
+
   return {
-    inline: {
-      image: container.style.backgroundImage,
-      repeat: container.style.backgroundRepeat,
-      position: container.style.backgroundPosition,
-      size: container.style.backgroundSize,
-    },
-    painted: {
-      image: computed.backgroundImage,
-      repeat: computed.backgroundRepeat,
-      position: computed.backgroundPosition,
-      size: computed.backgroundSize,
+    svg,
+    path,
+    restore() {
+      svg.remove();
+      container.style.position = previous.position;
+      container.style.isolation = previous.isolation;
     },
   };
 }
 
-function paintBackground(
-  container: HTMLElement,
-  snapshot: { inline: BackgroundSnapshot; painted: BackgroundSnapshot },
-  d: string,
-  color: string,
-  width: number,
-  height: number,
-) {
+function paintLayer(layer: HighlightLayer, d: string, color: string, width: number, height: number) {
+  const widthAttr = String(width);
+  const heightAttr = String(height);
+  const viewBox = `0 0 ${width} ${height}`;
+  if (layer.svg.getAttribute("width") !== widthAttr) layer.svg.setAttribute("width", widthAttr);
+  if (layer.svg.getAttribute("height") !== heightAttr) layer.svg.setAttribute("height", heightAttr);
+  if (layer.svg.getAttribute("viewBox") !== viewBox) layer.svg.setAttribute("viewBox", viewBox);
   if (!d) {
-    restoreBackground(container, snapshot.inline);
+    if (layer.path.getAttribute("d")) layer.path.removeAttribute("d");
     return;
   }
-  // The highlight is the element's own background. A negative z-index overlay
-  // is painted over the glyphs when a selection spans the whole container.
-  const xml =
-    `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}">` +
-    `<path fill="${escapeAttr(color)}" d="${escapeAttr(d)}"/></svg>`;
-  const url = `url("data:image/svg+xml,${encodeURIComponent(xml)}")`;
-  const prior = snapshot.painted;
-  if (prior.image && prior.image !== "none") {
-    container.style.backgroundImage = `${url}, ${prior.image}`;
-    container.style.backgroundRepeat = `no-repeat, ${prior.repeat}`;
-    container.style.backgroundPosition = `0px 0px, ${prior.position}`;
-    container.style.backgroundSize = `auto, ${prior.size}`;
-  } else {
-    container.style.backgroundImage = url;
-    container.style.backgroundRepeat = "no-repeat";
-    container.style.backgroundPosition = "0px 0px";
-    container.style.backgroundSize = "auto";
-  }
-}
-
-function restoreBackground(container: HTMLElement, inline: BackgroundSnapshot) {
-  container.style.backgroundImage = inline.image;
-  container.style.backgroundRepeat = inline.repeat;
-  container.style.backgroundPosition = inline.position;
-  container.style.backgroundSize = inline.size;
+  if (layer.path.getAttribute("fill") !== color) layer.path.setAttribute("fill", color);
+  if (layer.path.getAttribute("d") !== d) layer.path.setAttribute("d", d);
 }
 
 const highlightProbes = new WeakMap<Document, HTMLSpanElement>();
@@ -290,10 +281,6 @@ function systemHighlightColor(doc: Document): string {
   return color;
 }
 
-function escapeAttr(value: string): string {
-  return value.replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;");
-}
-
 function selectionRanges(container: HTMLElement): Range[] {
   const selection = container.ownerDocument.getSelection();
   if (!selection || selection.rangeCount === 0 || selection.isCollapsed) return [];
@@ -308,7 +295,7 @@ function selectionRanges(container: HTMLElement): Range[] {
   return ranges;
 }
 
-function measureRanges(container: HTMLElement, ranges: Range[], paddingInline: number): LineBox[] {
+function measureRanges(container: HTMLElement, ranges: Range[], paddingInline: number, ignore?: Element): LineBox[] {
   if (ranges.length === 0) return [];
 
   const origin = container.getBoundingClientRect();
@@ -323,13 +310,13 @@ function measureRanges(container: HTMLElement, ranges: Range[], paddingInline: n
     if (texts.length === 0) continue;
     const parent = texts[0].parentElement;
     if (texts.every((text) => text.parentElement === parent)) {
-      appendRects(boxes, range, lineHeightOf(parent, lineHeights), offsetX, offsetY, paddingInline);
+      appendRects(boxes, range, lineHeightOf(parent, lineHeights), offsetX, offsetY, paddingInline, ignore);
       continue;
     }
     for (const text of texts) {
       const slice = clipRangeToText(range, text);
       if (!slice) continue;
-      appendRects(boxes, slice, lineHeightOf(text.parentElement, lineHeights), offsetX, offsetY, paddingInline);
+      appendRects(boxes, slice, lineHeightOf(text.parentElement, lineHeights), offsetX, offsetY, paddingInline, ignore);
     }
   }
 
@@ -343,18 +330,54 @@ function appendRects(
   offsetX: number,
   offsetY: number,
   paddingInline: number,
+  ignore?: Element,
 ): void {
+  let skip: DOMRect | null = null;
+  if (ignore) {
+    try {
+      if (range.intersectsNode(ignore)) skip = ignore.getBoundingClientRect();
+    } catch {
+      skip = null;
+    }
+  }
   const rects = range.getClientRects();
   for (let i = 0; i < rects.length; i++) {
     const rect = rects[i];
     if (rect.width <= 0 || rect.height <= 0) continue;
+    if (
+      skip &&
+      Math.abs(rect.left - skip.left) < 0.5 &&
+      Math.abs(rect.top - skip.top) < 0.5 &&
+      Math.abs(rect.width - skip.width) < 0.5 &&
+      Math.abs(rect.height - skip.height) < 0.5
+    ) continue;
     const height = Math.max(rect.height, lineHeight);
-    boxes.push({
+    const next = {
       x: rect.left + offsetX,
       y: rect.top - (height - rect.height) / 2 + offsetY,
       width: rect.width + paddingInline * 2,
       height,
-    });
+    };
+    // Safari can return one rect per character, with a subpixel crack between
+    // them. Fuse those so the outline grows by the line, not by the glyph.
+    const last = boxes[boxes.length - 1];
+    if (
+      last &&
+      Math.abs(last.y - next.y) <= 1 &&
+      Math.abs(last.height - next.height) <= 1 &&
+      next.x <= last.x + last.width + 1 &&
+      next.x + next.width >= last.x - 1
+    ) {
+      const right = Math.max(last.x + last.width, next.x + next.width);
+      const top = Math.min(last.y, next.y);
+      const bottom = Math.max(last.y + last.height, next.y + next.height);
+      last.x = Math.min(last.x, next.x);
+      last.y = top;
+      last.width = right - last.x;
+      last.height = bottom - top;
+      continue;
+    }
+    boxes.push(next);
   }
 }
 

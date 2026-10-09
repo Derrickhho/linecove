@@ -10,10 +10,24 @@
     <link rel="stylesheet" href="./styles.css" />
   </head>
   <body>
-    <main>
+    <div class="scroll-edge scroll-edge--top" aria-hidden="true"></div>
+    <div class="scroll-edge scroll-edge--bottom" aria-hidden="true"></div>
+    <main class="t-enter">
       <div class="section">
-        <div class="masthead">
-          <img class="badge" src="./logo.svg" alt="Linecove" width="59" height="46" />
+        <div class="masthead t-enter-item">
+          <svg class="badge" width="29" height="23" viewBox="0 0 29 23" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Linecove">
+            <g clip-path="url(#badge-clip)">
+              <path id="badge-fill" d="M24.0674 0.142578C26.2764 0.142578 28.0672 1.93357 28.0674 4.14258V18.1426C28.0674 20.3517 26.2765 22.1426 24.0674 22.1426H8.06738C7.94689 22.1426 7.82774 22.1364 7.70996 22.126C8.0836 21.7842 8.30008 21.3031 8.30371 20.7861C8.30371 19.8827 7.62878 19.1039 6.73633 18.9775C6.01869 18.8743 5.47656 18.2464 5.47656 17.5166V5.09473C5.47656 4.36626 6.01958 3.73812 6.73828 3.63477C7.63195 3.50727 8.30755 2.73052 8.30762 1.82715V1.81836C8.30393 1.29282 8.07447 0.792784 7.67285 0.444336C7.56631 0.352972 7.4501 0.275803 7.3291 0.211914C7.56843 0.167217 7.81509 0.142605 8.06738 0.142578H24.0674Z" fill="rgba(35, 164, 255, 0.3)"/>
+              <path d="M13.0638 10.5429C12.7678 10.5429 12.5278 10.4629 12.3438 10.3029C12.1598 10.1349 12.0678 9.91485 12.0678 9.64285C12.0678 9.37085 12.1598 9.15485 12.3438 8.99485C12.5278 8.82685 12.7678 8.74285 13.0638 8.74285C13.3678 8.74285 13.6078 8.82685 13.7838 8.99485C13.9678 9.15485 14.0598 9.37085 14.0598 9.64285C14.0598 9.91485 13.9678 10.1349 13.7838 10.3029C13.6078 10.4629 13.3678 10.5429 13.0638 10.5429ZM13.0638 15.5829C12.7678 15.5829 12.5278 15.5029 12.3438 15.3429C12.1598 15.1749 12.0678 14.9549 12.0678 14.6829C12.0678 14.4109 12.1598 14.1949 12.3438 14.0349C12.5278 13.8669 12.7678 13.7829 13.0638 13.7829C13.3678 13.7829 13.6078 13.8669 13.7838 14.0349C13.9678 14.1949 14.0598 14.4109 14.0598 14.6829C14.0598 14.9549 13.9678 15.1749 13.7838 15.3429C13.6078 15.5029 13.3678 15.5829 13.0638 15.5829Z" fill="#504949"/>
+              <path d="M18.0391 16.9029V15.8349C18.5591 15.7149 19.0071 15.4909 19.3831 15.1629C19.7591 14.8269 20.0471 14.4069 20.2471 13.9029C20.4551 13.3989 20.5591 12.8389 20.5591 12.2229V10.0629C20.5591 9.43085 20.4551 8.86285 20.2471 8.35885C20.0391 7.85485 19.7471 7.43485 19.3711 7.09885C18.9951 6.75485 18.5511 6.52285 18.0391 6.40285V5.38285C18.7831 5.56685 19.4231 5.87885 19.9591 6.31885C20.4951 6.75885 20.9071 7.29885 21.1951 7.93885C21.4911 8.57085 21.6391 9.27885 21.6391 10.0629V12.2229C21.6391 13.4149 21.3231 14.4229 20.6911 15.2469C20.0591 16.0709 19.1751 16.6229 18.0391 16.9029Z" fill="#504949"/>
+              <path fill-rule="evenodd" clip-rule="evenodd" d="M0.744926 2.43203C2.05878 2.62025 3.04964 3.76532 3.04964 5.09375V17.5159C3.04964 18.8443 2.05636 19.9894 0.740069 20.1776C0.440141 20.2201 0.214283 20.4812 0.214283 20.7847C0.215497 20.962 0.291998 21.1296 0.42557 21.2462C0.560355 21.3603 0.736426 21.4137 0.913712 21.3882C2.03328 21.228 3.04114 20.5735 3.65193 19.6227C4.26393 20.5735 5.27057 21.228 6.39135 21.3882C6.56378 21.4137 6.7435 21.3603 6.87707 21.245C7.01185 21.1296 7.08836 20.962 7.08957 20.7847C7.08957 20.4812 6.86371 20.2201 6.56378 20.1776C5.25235 19.9894 4.26393 18.8455 4.26393 17.5159V5.09375C4.26393 3.76532 5.25478 2.62025 6.56864 2.43203C6.86857 2.38953 7.09443 2.12846 7.09443 1.82489C7.09321 1.64882 7.0155 1.48003 6.88193 1.36346C6.74714 1.24932 6.57107 1.19346 6.395 1.22139C5.27543 1.38289 4.26757 2.03618 3.65557 2.98696C3.04357 2.03618 2.03693 1.38289 0.917355 1.22139C0.889426 1.21775 0.860283 1.21532 0.831141 1.21532C0.685426 1.21532 0.543355 1.26753 0.431641 1.36346C0.296855 1.48003 0.220355 1.64761 0.219141 1.82611C0.219141 2.12846 0.444998 2.38953 0.744926 2.43203Z" fill="black"/>
+            </g>
+            <defs>
+              <clipPath id="badge-clip">
+                <rect width="29" height="23" fill="white"/>
+              </clipPath>
+            </defs>
+          </svg>
           <p class="links">
             <a href="https://github.com/Derrickhho/linecove">
               <svg viewBox="0 0 16 16" aria-hidden="true">
@@ -23,55 +37,109 @@
             </a>
           </p>
         </div>
-        <p class="title">Linecove</p>
-        <p class="lede">
-          A <a href="https://en.wikipedia.org/wiki/Coving_(interior_design)">cove</a> is the inward corner of a text highlight, where a shorter line steps in from a longer one.
-          Customize the color and radius. Try it out below.
-        </p>
-        <div class="panel">
-        <div class="tabs">
-          <div class="t-tabs" role="tablist" aria-label="Example">
-            <span id="tab-indicator" class="t-tabs-pill" aria-hidden="true"></span>
-            <a role="tab" id="tab-code" href="#code" aria-controls="code" aria-selected="true" class="t-tab">Code</a>
-            <a role="tab" id="tab-text" href="#poem" aria-controls="poem" aria-selected="false" class="t-tab">Text</a>
+        <p class="title t-enter-item">Linecove</p>
+        <div class="stack">
+          <p class="lede t-enter-item">
+            A <a href="https://en.wikipedia.org/wiki/Coving_(interior_design)">cove</a> is the inward corner of a text highlight, where a shorter line steps in from a longer one.
+            Customize the color and radius. Try it out below.
+          </p>
+          <div class="panel t-enter-item t-enter-item--panel">
+          <div class="tabs">
+            <div class="t-tabs" role="tablist" aria-label="Example">
+              <span id="tab-indicator" class="t-tabs-pill" aria-hidden="true"></span>
+              <a role="tab" id="tab-code" href="#code" aria-controls="code" aria-selected="true" class="t-tab">Code</a>
+              <a role="tab" id="tab-text" href="#poem" aria-controls="poem" aria-selected="false" class="t-tab">Text</a>
+            </div>
+            <div class="settings" id="settings">
+              <div class="setting" id="radius-setting">
+                <button type="button" id="settings-toggle" aria-label="Radius: 6px" aria-haspopup="listbox" aria-expanded="false" aria-controls="radius-list">
+                  <svg id="radius-icon" viewBox="0 0 16 16" aria-hidden="true">
+                    <path id="radius-icon-path" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M14 2H4.25A2.25 2.25 0 0 0 2 4.25V14" />
+                  </svg>
+                </button>
+                <ul id="radius-list" class="t-dropdown settings-menu" data-origin="top-right" role="listbox" aria-label="Radius" hidden>
+                  <li role="option" data-radius="2">
+                    <svg viewBox="0 0 16 16" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M14 2H3.25A1.25 1.25 0 0 0 2 3.25V14" /></svg>
+                    <span>2px</span>
+                  </li>
+                  <li role="option" data-radius="4">
+                    <svg viewBox="0 0 16 16" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M14 2H4.5A2.5 2.5 0 0 0 2 4.5V14" /></svg>
+                    <span>4px</span>
+                  </li>
+                  <li role="option" data-radius="6" aria-selected="true">
+                    <svg viewBox="0 0 16 16" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M14 2H5.75A3.75 3.75 0 0 0 2 5.75V14" /></svg>
+                    <span>6px</span>
+                  </li>
+                  <li role="option" data-radius="8">
+                    <svg viewBox="0 0 16 16" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M14 2H7A5 5 0 0 0 2 7V14" /></svg>
+                    <span>8px</span>
+                  </li>
+                  <li role="option" data-radius="12">
+                    <svg viewBox="0 0 16 16" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M14 2H9.5A7.5 7.5 0 0 0 2 9.5V14" /></svg>
+                    <span>12px</span>
+                  </li>
+                  <li role="option" data-radius="16">
+                    <svg viewBox="0 0 16 16" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M14 2H12A10 10 0 0 0 2 12V14" /></svg>
+                    <span>16px</span>
+                  </li>
+                </ul>
+              </div>
+              <div class="setting" id="color-setting">
+                <button type="button" id="color-toggle" aria-label="Highlight color: Blue" aria-haspopup="listbox" aria-expanded="false" aria-controls="color-list">
+                  <span id="color-swatch" class="color-swatch" style="background: #23A4FF"></span>
+                </button>
+                <ul id="color-list" class="t-dropdown settings-menu" data-origin="top-right" role="listbox" aria-label="Highlight color" hidden>
+                  <li role="option" data-color="rgba(35, 164, 255, 0.3)" data-label="Blue" aria-selected="true">
+                    <span class="color-swatch" style="background: #23A4FF"></span>
+                    <span>Blue</span>
+                  </li>
+                  <li role="option" data-color="rgba(255, 214, 102, 0.75)" data-label="Yellow">
+                    <span class="color-swatch" style="background: rgba(255, 214, 102, 0.9)"></span>
+                    <span>Yellow</span>
+                  </li>
+                  <li role="option" data-color="rgba(134, 239, 172, 0.7)" data-label="Green">
+                    <span class="color-swatch" style="background: rgba(134, 239, 172, 0.9)"></span>
+                    <span>Green</span>
+                  </li>
+                  <li role="option" data-color="rgba(249, 168, 212, 0.7)" data-label="Pink">
+                    <span class="color-swatch" style="background: rgba(249, 168, 212, 0.9)"></span>
+                    <span>Pink</span>
+                  </li>
+                  <li role="option" data-color="rgba(196, 181, 253, 0.75)" data-label="Purple">
+                    <span class="color-swatch" style="background: rgba(196, 181, 253, 0.9)"></span>
+                    <span>Purple</span>
+                  </li>
+                  <li role="option" data-color="rgba(253, 186, 116, 0.75)" data-label="Orange">
+                    <span class="color-swatch" style="background: rgba(253, 186, 116, 0.9)"></span>
+                    <span>Orange</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
           </div>
-          <div class="settings" id="settings">
-            <button type="button" id="settings-toggle" aria-label="Radius" aria-haspopup="listbox" aria-expanded="false" aria-controls="radius-list">
-              <span id="radius-value">Radius: 6px</span>
-            </button>
-            <ul id="radius-list" class="t-dropdown" data-origin="top-right" role="listbox" aria-label="Radius">
-              <li role="option" data-radius="2">2px</li>
-              <li role="option" data-radius="4">4px</li>
-              <li role="option" data-radius="6" aria-selected="true">6px</li>
-              <li role="option" data-radius="8">8px</li>
-              <li role="option" data-radius="12">12px</li>
-              <li role="option" data-radius="16">16px</li>
-            </ul>
-          </div>
-        </div>
 
-        <div id="compare">
-          <div class="pane" id="before">
-            <p class="pane-label">
-              <svg class="mark-no" viewBox="0 0 16 16" aria-hidden="true">
-                <path d="M4.5 4.5 11.5 11.5M11.5 4.5 4.5 11.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
-              </svg>
-              without rounding
-            </p>
+          <div id="compare">
+            <div class="pane" id="before">
+              <p class="pane-label">
+                <svg class="mark-no" viewBox="0 0 16 16" aria-hidden="true">
+                  <path d="M4.5 4.5 11.5 11.5M11.5 4.5 4.5 11.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+                </svg>
+                without rounding
+              </p>
+            </div>
+            <div class="pane" id="after">
+              <p class="pane-label">
+                <svg class="mark-yes" viewBox="0 0 16 16" aria-hidden="true">
+                  <path d="M3.5 8.5 6.5 11.5 12.5 4.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+                with rounding
+              </p>
+            </div>
           </div>
-          <div class="pane" id="after">
-            <p class="pane-label">
-              <svg class="mark-yes" viewBox="0 0 16 16" aria-hidden="true">
-                <path d="M3.5 8.5 6.5 11.5 12.5 4.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
-              </svg>
-              with rounding
-            </p>
-          </div>
-        </div>
 
-        <div id="play" hidden>
-          <div id="stage">
-            <pre id="code" class="example-code"><code class="language-java">String whereYouBelong(You you)
+          <div id="play" hidden>
+            <div id="stage">
+              <pre id="code" class="example-code"><code class="language-java">String whereYouBelong(You you)
 {
     if (you.feelsFree())
     {
@@ -82,51 +150,55 @@
     else
         return "somewhere free";
 }</code></pre>
-            <div id="poem" class="poem example-text" hidden>
-              <p>
-                You belong among the wildflowers<br />
-                You belong in a boat out at sea<br />
-                Sail away, kill off the hours<br />
-                You belong somewhere you feel free
-              </p>
-              <p>
-                Run away, find you a lover<br />
-                Go away somewhere all bright and new<br />
-                I have seen no other<br />
-                Who compares with you
-              </p>
+              <div id="poem" class="poem example-text" hidden>
+                <p>
+                  You belong among the wildflowers<br />
+                  You belong in a boat out at sea<br />
+                  Sail away, kill off the hours<br />
+                  You belong somewhere you feel free
+                </p>
+                <p>
+                  Run away, find you a lover<br />
+                  Go away somewhere all bright and new<br />
+                  I have seen no other<br />
+                  Who compares with you
+                </p>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-      </div>
-
-      <div class="section">
-        <h2>Installation</h2>
-        <p>The package is ESM and includes TypeScript types. It has no runtime dependencies.</p>
-        <div class="snippet">
-          <pre class="install"><code class="language-bash">npm install linecove</code></pre>
-          <button type="button" class="copy t-icon-swap" data-state="a" aria-label="Copy code">
-            <svg class="t-icon copy-icon" data-icon="a" viewBox="0 0 16 16" aria-hidden="true">
-              <rect x="6" y="6" width="8" height="8" rx="1.25" fill="none" stroke="currentColor" stroke-width="1.4" />
-              <path d="M10 6V3.75c0-.69-.56-1.25-1.25-1.25h-5C3.06 2.5 2.5 3.06 2.5 3.75v5c0 .69.56 1.25 1.25 1.25H6" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" />
-            </svg>
-            <svg class="t-icon copied-icon" data-icon="b" viewBox="0 0 16 16" aria-hidden="true">
-              <path d="M3.5 8.5 6.5 11.5 12.5 4.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
-            </svg>
-          </button>
         </div>
       </div>
 
       <div class="section">
-        <h2>Usage</h2>
-        <p>
-          Attach it to an element. The browser selection stays in place, so copy and paste still work.
-          Inside that element, the native highlight is hidden and Linecove draws the rounded shape instead.
-          Call <code>destroy()</code> when the element goes away.
-        </p>
-        <div class="snippet">
-          <pre class="usage"><code class="language-ts">import { attachLiveSelection } from "linecove";
+        <h2 class="t-enter-item">Installation</h2>
+        <div class="stack t-enter-item">
+          <p>The package is ESM and includes TypeScript types. It has no runtime dependencies.</p>
+          <div class="snippet">
+            <pre class="install"><code class="language-bash">npm install linecove</code></pre>
+            <button type="button" class="copy t-icon-swap" data-state="a" aria-label="Copy code">
+              <svg class="t-icon copy-icon" data-icon="a" viewBox="0 0 16 16" aria-hidden="true">
+                <rect x="6" y="6" width="8" height="8" rx="1.25" fill="none" stroke="currentColor" stroke-width="1.4" />
+                <path d="M10 6V3.75c0-.69-.56-1.25-1.25-1.25h-5C3.06 2.5 2.5 3.06 2.5 3.75v5c0 .69.56 1.25 1.25 1.25H6" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" />
+              </svg>
+              <svg class="t-icon copied-icon" data-icon="b" viewBox="0 0 16 16" aria-hidden="true">
+                <path d="M3.5 8.5 6.5 11.5 12.5 4.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2 class="t-enter-item">Usage</h2>
+        <div class="stack t-enter-item">
+          <p>
+            Attach it to an element. The browser selection stays in place, so copy and paste still work.
+            Inside that element, the native highlight is hidden and Linecove draws the rounded shape instead.
+            Call <code>destroy()</code> when the element goes away.
+          </p>
+          <div class="snippet">
+            <pre class="usage"><code class="language-ts">import { attachLiveSelection } from "linecove";
 
 const article = document.querySelector("article");
 if (!article) throw new Error("Missing article");
@@ -135,15 +207,16 @@ const highlight = attachLiveSelection(article, {
   radius: 6,
   paddingInline: 1,
 });</code></pre>
-          <button type="button" class="copy t-icon-swap" data-state="a" aria-label="Copy code">
-            <svg class="t-icon copy-icon" data-icon="a" viewBox="0 0 16 16" aria-hidden="true">
-              <rect x="6" y="6" width="8" height="8" rx="1.25" fill="none" stroke="currentColor" stroke-width="1.4" />
-              <path d="M10 6V3.75c0-.69-.56-1.25-1.25-1.25h-5C3.06 2.5 2.5 3.06 2.5 3.75v5c0 .69.56 1.25 1.25 1.25H6" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" />
-            </svg>
-            <svg class="t-icon copied-icon" data-icon="b" viewBox="0 0 16 16" aria-hidden="true">
-              <path d="M3.5 8.5 6.5 11.5 12.5 4.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
-            </svg>
-          </button>
+            <button type="button" class="copy t-icon-swap" data-state="a" aria-label="Copy code">
+              <svg class="t-icon copy-icon" data-icon="a" viewBox="0 0 16 16" aria-hidden="true">
+                <rect x="6" y="6" width="8" height="8" rx="1.25" fill="none" stroke="currentColor" stroke-width="1.4" />
+                <path d="M10 6V3.75c0-.69-.56-1.25-1.25-1.25h-5C3.06 2.5 2.5 3.06 2.5 3.75v5c0 .69.56 1.25 1.25 1.25H6" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" />
+              </svg>
+              <svg class="t-icon copied-icon" data-icon="b" viewBox="0 0 16 16" aria-hidden="true">
+                <path d="M3.5 8.5 6.5 11.5 12.5 4.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+            </button>
+          </div>
         </div>
       </div>
     </main>

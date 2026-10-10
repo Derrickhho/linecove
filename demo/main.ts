@@ -295,6 +295,8 @@ function setDropdownOpen(menu: HTMLElement, toggle: HTMLButtonElement, open: boo
 function closeAllMenus(): void {
   setDropdownOpen(radiusList!, settingsToggle!, false);
   setDropdownOpen(colorList!, colorToggle!, false);
+  animateRadiusIcon(selectedRadiusIconR);
+  colorSwatch!.style.background = selectedSwatch;
 }
 
 function placeTabIndicator(animate: boolean): void {
@@ -338,9 +340,12 @@ function showExample(next: Example): void {
   });
 }
 
-function radiusIconPathD(radius: number): string {
+function radiusIconCorner(radius: number): number {
   // Map demo radii (2–16) onto the icon corner so each step is easy to read.
-  const r = Math.max(0, Math.min(10, (radius / 16) * 10));
+  return Math.max(0, Math.min(10, (radius / 16) * 10));
+}
+
+function radiusIconPathD(r: number): string {
   if (r < 0.35) return "M14 2H2V14";
   const x = (2 + r).toFixed(2);
   const y = (2 + r).toFixed(2);
@@ -348,9 +353,35 @@ function radiusIconPathD(radius: number): string {
   return `M14 2H${x}A${arc} ${arc} 0 0 0 2 ${y}V14`;
 }
 
+const RADIUS_ICON_MS = 250;
+let radiusIconR = Number(/A([\d.]+)/.exec(radiusIconPath.getAttribute("d") ?? "")?.[1] ?? 0);
+let selectedRadiusIconR = radiusIconR;
+let radiusIconFrame = 0;
+
 function setRadiusIcon(next: number): void {
-  radiusIconPath!.setAttribute("d", radiusIconPathD(next));
   settingsToggle!.setAttribute("aria-label", `Radius: ${next}px`);
+  selectedRadiusIconR = radiusIconCorner(next);
+  animateRadiusIcon(selectedRadiusIconR);
+}
+
+function animateRadiusIcon(to: number): void {
+  cancelAnimationFrame(radiusIconFrame);
+  const from = radiusIconR;
+  const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if (reduce || from === to) {
+    radiusIconR = to;
+    radiusIconPath!.setAttribute("d", radiusIconPathD(to));
+    return;
+  }
+  const start = performance.now();
+  const step = (now: number) => {
+    const t = Math.min(1, (now - start) / RADIUS_ICON_MS);
+    const eased = 1 - Math.pow(1 - t, 4);
+    radiusIconR = from + (to - from) * eased;
+    radiusIconPath!.setAttribute("d", radiusIconPathD(radiusIconR));
+    if (t < 1) radiusIconFrame = requestAnimationFrame(step);
+  };
+  radiusIconFrame = requestAnimationFrame(step);
 }
 
 function savedSelection(): Range[] {
@@ -392,7 +423,10 @@ function applyRadius(next: number): void {
   closeAllMenus();
 }
 
+let selectedSwatch = colorSwatch.style.background;
+
 function applyColor(next: string, label: string, swatch: string): void {
+  selectedSwatch = swatch;
   colorSwatch!.style.background = swatch;
   badgeFill!.setAttribute("fill", next);
   colorToggle!.setAttribute("aria-label", `Highlight color: ${label}`);
@@ -436,7 +470,12 @@ for (const option of radiusOptions) {
     const next = Number(option.dataset.radius);
     if (Number.isFinite(next)) applyRadius(next);
   });
+  option.addEventListener("mouseenter", () => {
+    const radius = Number(option.dataset.radius);
+    if (Number.isFinite(radius)) animateRadiusIcon(radiusIconCorner(radius));
+  });
 }
+radiusList.addEventListener("mouseleave", () => animateRadiusIcon(selectedRadiusIconR));
 for (const option of colorOptions) {
   option.addEventListener("click", () => {
     const next = option.dataset.color;
@@ -444,7 +483,14 @@ for (const option of colorOptions) {
     const swatch = option.querySelector<HTMLElement>(".color-swatch")?.style.background || next;
     if (next) applyColor(next, label, swatch);
   });
+  option.addEventListener("mouseenter", () => {
+    const swatch = option.querySelector<HTMLElement>(".color-swatch")?.style.background;
+    if (swatch) colorSwatch!.style.background = swatch;
+  });
 }
+colorList.addEventListener("mouseleave", () => {
+  colorSwatch!.style.background = selectedSwatch;
+});
 document.addEventListener("click", (event) => {
   if (!settings.contains(event.target as Node)) closeAllMenus();
 });

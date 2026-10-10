@@ -191,7 +191,7 @@ h2::after {
   color: inherit;
   text-decoration: underline;
   text-decoration-color: #d4d4d4;
-  text-underline-offset: 0.22em;
+  text-underline-offset: 0.15em;
   transition: text-decoration-color 180ms var(--tabs-ease);
 }
 
@@ -351,6 +351,9 @@ h2::after {
 .tabs .t-tab[aria-selected="true"] {
   color: var(--strong);
 }
+.tabs .t-tab:not([aria-selected="true"]):hover {
+  background: var(--fill);
+}
 .tabs .t-tabs-pill {
   top: 0;
   height: 100%;
@@ -401,6 +404,28 @@ h2::after {
   width: 14px;
   height: 14px;
   border-radius: 50%;
+}
+
+#radius-icon-path {
+  transition: stroke-width 200ms var(--tabs-ease);
+}
+
+#settings-toggle:hover #radius-icon-path {
+  stroke-width: 2;
+}
+
+#color-swatch {
+  transition:
+    transform 200ms var(--tabs-ease),
+    background-color 200ms var(--tabs-ease);
+}
+
+#color-toggle:hover #color-swatch {
+  transform: scale(1.08);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #radius-icon-path, #color-swatch { transition: none; }
 }
 
 #radius-list,
@@ -667,12 +692,12 @@ code {
 
 .copy {
   position: absolute;
-  top: calc(14px + 0.5px);
-  right: 12px;
+  top: calc(14px + 0.5px + (13px * 1.65 - 26px) / 2);
+  right: calc(12px + (13px * 1.65 - 26px) / 2);
   display: grid;
   place-items: center;
-  width: calc(13px * 1.65);
-  height: calc(13px * 1.65);
+  width: 26px;
+  height: 26px;
   padding: 0;
   border: 0;
   border-radius: 6px;
